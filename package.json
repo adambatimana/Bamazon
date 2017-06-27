@@ -1,0 +1,29 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "Amazon Front Store App",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "none"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adambatimana/Bamazon.git"
+  },
+  "keywords": [
+    "amazon",
+    "store",
+    "app"
+  ],
+  "author": "adam batimana",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adambatimana/Bamazon/issues"
+  },
+  "homepage": "https://github.com/adambatimana/Bamazon#readme",
+  "dependencies": {
+    "inquirer": "^3.1.1",
+    "mysql": "^2.13.0",
+    "require": "^2.4.20"
+  }
+}
