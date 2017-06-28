@@ -4,7 +4,7 @@
 //====================================
 const inquirer = require('inquirer');
 const mysql = require('mysql');
-
+let updateQuant;
 //====================================
 //          CONNECT TO MYSQL
 //====================================
@@ -67,31 +67,38 @@ function start() {
   ])//end prompt
     .then(function(answer) {
         if (err) throw err;
-
+        let answerIdno = answer.idNo
+        let answerQuant = answer.noOfItem
+        let stockQuant = res[parseInt(answer.idNo)].stock_quantities
+        let updateQuant = stockQuant - answerQuant
           // compare item_no to database and if item quantity is available
-          if (answer.noOfItem >= res[parseInt(answer.idNo)].stock_quantities)
+          if (answerQuant > stockQuant || stockQuant == 0)
           {
             console.log("Insufficient Quantity!")
           }
           else {
-            connection.query(
-              "UPDATE products SET ? WHERE ?",
-              {
-                stock_quantities:res[parseInt(answer.idNo)].stock_quantities- answer.noOfItem
-              },
-              function(err) {
-                if (err) throw err;
-                console.log("Please pay before your order is sent out")
-                // re-prompt the user if they want to buy more items
-                start();
-              }
-            );
-          }
-    });
+            updateDatabase(answerIdno,updateQuant);
+          }//end else
+    });//end then
+
+
+
+function updateDatabase(answer,quantity){
+
+  connection.query("UPDATE products SET ? WHERE ?",
+    {
+      stock_quantities: quantity
+    },
+    {
+      item_id: answer
+    },
+      function(err, res) {
+        if (err) throw err;
+        console.log("Please pay before your order is sent out")
+        // re-prompt the user if they want to buy more items
+        start();
+      }
+  );//end connection
+};
 })//end connection
 }//end start
-
-
-// function updateDatabase(){
-//
-// };
