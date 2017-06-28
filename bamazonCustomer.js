@@ -68,8 +68,8 @@ function start() {
     .then(function(answer) {
         if (err) throw err;
         let answerIdno = answer.idNo
-        let answerQuant = answer.noOfItem
-        let stockQuant = res[parseInt(answer.idNo)].stock_quantities
+        let answerQuant = parseInt(answer.noOfItem)
+        let stockQuant = parseInt(res[parseInt(answer.idNo)].stock_quantities)
         let updateQuant = stockQuant - answerQuant
           // compare item_no to database and if item quantity is available
           if (answerQuant > stockQuant || stockQuant == 0)
@@ -86,18 +86,21 @@ function start() {
 function updateDatabase(answer,quantity){
 
   connection.query("UPDATE products SET ? WHERE ?",
+  [
     {
       stock_quantities: quantity
     },
     {
       item_id: answer
-    },
+    }
+  ],
       function(err, res) {
         if (err) throw err;
         console.log("Please pay before your order is sent out")
         // re-prompt the user if they want to buy more items
         start();
       }
+
   );//end connection
 };
 })//end connection
