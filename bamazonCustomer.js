@@ -45,15 +45,17 @@ function displayItems(){
 
 function start() {
   connection.query("SELECT * FROM products", function(err,res){
+    if (err) throw err;
+    // console.log(res)
   inquirer
     .prompt([
       {
       name: "idNo",
       type: "rawlist",
       choices: function() {
-				var choiceArray = [];
+				let choiceArray = [];
 				for(var i = 0; i < res.length; i++) {
-					choiceArray.push(res[i].item_id);
+					choiceArray.push(res[i].product_name);
 				}
 				return choiceArray;
 			},
@@ -66,12 +68,17 @@ function start() {
     }
   ])//end prompt
     .then(function(answer) {
-        if (err) throw err;
-        let choseItem;
-        let answerIdnum = answer.idNo
+        let chosenItem;
+        for (var i = 0; i < res.length; i++) {
+          if (res[i].product_name === answer.idNo) {
+            chosenItem = res[i];
+          }
+        }
         let answerQuant = parseInt(answer.noOfItem)
-        let stockQuant = parseInt(res[parseInt(answer.idNo)].stock_quantities)
+        let stockQuant = chosenItem.stock_quantities
         let updateQuant = stockQuant - answerQuant
+
+
           // compare item_no to database and if item quantity is available
           if (updateQuant <= 0)
           {
@@ -79,22 +86,20 @@ function start() {
             start();
           }
           else {
-            updateDatabase(answerIdnum,updateQuant);
+            updateDatabase(chosenItem,updateQuant);
           }//end else
 
-          if(res[i].item_id === answer.choice) {
-      			chosenItem = res[i];
-      		}
+
     });//end then
 
-function updateDatabase(answerId,quantity){
+function updateDatabase(answerName,quantity){
   connection.query("UPDATE products SET ? WHERE ?",
   [
     {
       stock_quantities: quantity
     },
-    {//update to line up itemid with anser id num
-      item_id: answerId
+    {
+      product_name: answerName
     }
   ],
       function(err, res) {
@@ -111,6 +116,7 @@ function updateDatabase(answerId,quantity){
 
 function databaseQuantityLeft(){
   connection.query("SELECT * FROM products", function(err,res){
+    if (err) throw err;
     for (var i = 0; i < res.length; i++) {
       console.log(res[i].stock_quantities)
     }
