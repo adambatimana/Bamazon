@@ -9,18 +9,18 @@ let updateQuant;
 //          CONNECT TO MYSQL
 //====================================
 const connection = mysql.createConnection({
-  host: 'localhost',
-  port: 8889,
-  user: 'root',
-  password: 'root',
-  database: 'Bamazon'
+    host: 'localhost',
+    port: 8889,
+    user: 'root',
+    password: 'root',
+    database: 'Bamazon'
 });
 
 //connect mySql and display connection
 connection.connect(function(err) {
-  if(err) throw err;
-  console.log(`connected as id ${ connection.threadId }`);
-  displayItems();
+      if(err) throw err;
+      console.log(`connected as id ${ connection.threadId }`);
+      displayItems();
 });
 
 function displayItems(){
@@ -59,7 +59,7 @@ function start() {
 				}
 				return choiceArray;
 			},
-      message: "Please insert the number of the product you would like to buy."
+      message: "Please select the product you would like to buy."
     },
     {
       name: "noOfItem",
@@ -68,46 +68,49 @@ function start() {
     }
   ])//end prompt
     .then(function(answer) {
+        //disply the product names in the raw list to choose from
         let chosenItem;
-        for (var i = 0; i < res.length; i++) {
-          if (res[i].product_name === answer.idNo) {
-            chosenItem = res[i];
-          }
-        }
-        let answerQuant = parseInt(answer.noOfItem)
-        let stockQuant = chosenItem.stock_quantities
-        let updateQuant = stockQuant - answerQuant
+            for (var i = 0; i < res.length; i++) {
+              if (res[i].product_name === answer.idNo) {
+                chosenItem = res[i];
+              }
+            }
+        let answerQuant = parseInt(answer.noOfItem)//number of items wanted
+        let stockQuant = parseInt(chosenItem.stock_quantities)//stock quantity
+        // console.log("THE NUMBER OF ITEMS LEFT: " + stockQuant)
+              // compare item_no to database and if item quantity is available
+              if (answerQuant > stockQuant)
+                  {
+                        console.log("Insufficient Quantity!")
+                        start();
+                  }
+                  else if (answerQuant <= stockQuant){
 
+                        let updateQuant = stockQuant - answerQuant
+                        updateDatabase(chosenItem,updateQuant);
+                        console.log("MINUS THE CUST REQUEST: " + updateQuant)
 
-          // compare item_no to database and if item quantity is available
-          if (updateQuant <= 0)
-          {
-            console.log("Insufficient Quantity!")
-            start();
-          }
-          else {
-            updateDatabase(chosenItem,updateQuant);
-          }//end else
-
-
+                  }
+                  else {
+                        console.log("Insufficient Quantity!")
+                        start();
+                  } //end if statement
     });//end then
 
 function updateDatabase(answerName,quantity){
   connection.query("UPDATE products SET ? WHERE ?",
   [
-    {
+    { //needs to be a typeOf number???
       stock_quantities: quantity
     },
-    {
+    { //needs to be a typeOf string??
       product_name: answerName
     }
-  ],
-      function(err, res) {
-        if (err) throw err;
-        console.log("PLEASE PAY BEFORE YOUR ORDER IS SHIPPED.")
+  ],function(err, res) {
+        console.log(res.affectedRows + " PLEASE PAY BEFORE YOUR ORDER IS SHIPPED.")
         // re-prompt the user if they want to buy more items
         start();
-      }
+    }
   );//end connection
 };//end updateDatabase
 })//end connection
@@ -117,8 +120,8 @@ function updateDatabase(answerName,quantity){
 function databaseQuantityLeft(){
   connection.query("SELECT * FROM products", function(err,res){
     if (err) throw err;
-    for (var i = 0; i < res.length; i++) {
-      console.log(res[i].stock_quantities)
-    }
+        for (var i = 0; i < res.length; i++) {
+          console.log(res[i].stock_quantities)
+        }
   })
 }
