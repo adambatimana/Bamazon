@@ -17,6 +17,13 @@ Then the next step would be to use inquirer to prompt two question, "Which Item 
 
 If the process is complete then the database should be updated and the console should show a message to confirm the order was done properly.
 
+
 <p align="center">
   <img src="/images/bamazon3.jpg" />
+</p>
+
+If the database does not have enough items the console will log the messages "INSUFFICIENT QUANTITY!"
+
+<p align="center">
+  <img src="/images/insufficient.jpg" />
 </p>
