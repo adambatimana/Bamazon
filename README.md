@@ -27,3 +27,5 @@ If the database does not have enough items the console will log the messages "IN
 <p align="center">
   <img src="/images/insufficient.jpg" />
 </p>
+
+After each question is answered the application goes back to the first question to see if the client or customer would like to buy another item.
