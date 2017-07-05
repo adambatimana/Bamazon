@@ -27,15 +27,12 @@ function displayItems(){
   connection.query("SELECT * FROM products", function(err,res){
 
     if (err) throw err;
-    // let itemNumber = -1
-          // PRINT ALL ITEMS
            for (var i = 0; i < res.length; i++) {
             //  itemNumber++
              console.log(
                "ITEM #" + res[i].item_id + " | ",
                "PRODUCT:" + res[i].product_name + " | ",
                "PRICE: $" + res[i].price + " | "
-              //  "ENTER " + itemNumber + " TO PURCHASE"
              );
            }
            //ask questions
@@ -77,10 +74,10 @@ function start() {
             }
         let answerQuant = parseInt(answer.noOfItem)//number of items wanted
         let stockQuant = parseInt(chosenItem.stock_quantities)//stock quantity
-        let productId = parseInt(chosenItem.item_id)
-        let updateQuant = stockQuant - answerQuant
-        console.log("THE NUMBER OF ITEMS LEFT: " + stockQuant)
-        console.log("THE PRODUCTS ID IS " + productId)
+        let productId = parseInt(chosenItem.item_id)//product id number
+        let updateQuant = stockQuant - answerQuant//math for updated quantity
+        // console.log("THE NUMBER OF ITEMS LEFT: " + stockQuant)
+        // console.log("THE PRODUCTS ID IS " + productId)
               // compare item_no to database and if item quantity is available
               if (answerQuant > stockQuant)
                   {
@@ -90,7 +87,7 @@ function start() {
                   else if (answerQuant <= stockQuant){
 
                         updateDatabase(productId,updateQuant);
-                        console.log("MINUS THE CUST REQUEST: " + updateQuant)
+                        // console.log("MINUS THE CUST REQUEST: " + updateQuant)
 
                   }
                   else {
