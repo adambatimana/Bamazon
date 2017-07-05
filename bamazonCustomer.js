@@ -77,7 +77,10 @@ function start() {
             }
         let answerQuant = parseInt(answer.noOfItem)//number of items wanted
         let stockQuant = parseInt(chosenItem.stock_quantities)//stock quantity
-        // console.log("THE NUMBER OF ITEMS LEFT: " + stockQuant)
+        let productId = parseInt(chosenItem.item_id)
+        let updateQuant = stockQuant - answerQuant
+        console.log("THE NUMBER OF ITEMS LEFT: " + stockQuant)
+        console.log("THE PRODUCTS ID IS " + productId)
               // compare item_no to database and if item quantity is available
               if (answerQuant > stockQuant)
                   {
@@ -86,8 +89,7 @@ function start() {
                   }
                   else if (answerQuant <= stockQuant){
 
-                        let updateQuant = stockQuant - answerQuant
-                        updateDatabase(chosenItem,updateQuant);
+                        updateDatabase(productId,updateQuant);
                         console.log("MINUS THE CUST REQUEST: " + updateQuant)
 
                   }
@@ -104,7 +106,7 @@ function updateDatabase(answerName,quantity){
       stock_quantities: quantity
     },
     { //needs to be a typeOf string??
-      product_name: answerName
+      item_id: answerName
     }
   ],function(err, res) {
         console.log(res.affectedRows + " PLEASE PAY BEFORE YOUR ORDER IS SHIPPED.")
